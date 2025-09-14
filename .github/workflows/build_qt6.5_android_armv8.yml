@@ -17,23 +17,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # 检出本仓库
+    # 检出本仓库 /home/runner/work/qt-builder/qt-builder (仓库目录)
     - name: Checkout repository
       uses: actions/checkout@v4
 
     # 安装更新
     - name: Install updates
       run: |
-        export DEBIAN_FRONTEND=noninteractive
-        dpkg --add-architecture arm64
-        apt-get -y update
-        apt-get -y upgrade
+        cd /home/runner/work/qt-builder
+        sudo export DEBIAN_FRONTEND=noninteractive
+        sudo dpkg --add-architecture arm64
+        sudo apt-get -y update
+        sudo apt-get -y upgrade
 
     # 安装依赖
     - name: Install dependencies
       run: |
-        apt-get -y install build-essential
-        apt-get -y install gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu pip freeglut3-dev:arm64 gdb git iputils-ping \
+        sudo apt-get -y install build-essential
+        sudo apt-get -y install gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu pip freeglut3-dev:arm64 gdb git iputils-ping \
         libgl1-mesa-dev:arm64 libglu1-mesa-dev:arm64 libjpeg-dev:arm64 libmysqlclient-dev:arm64 \
         libnss3-dev:arm64 libopus-dev:arm64 libpng-dev:arm64 libsqlite3-dev:arm64 libssl-dev:arm64 \
         libx11-xcb-dev:arm64 libxcb-xinerama0-dev:arm64 libxcb-xkb-dev:arm64 libxcb1-dev:arm64 \
@@ -53,7 +54,7 @@ jobs:
         libb2-dev:arm64 libva-dev:arm64 \
         g++-aarch64-linux-gnu gcc-aarch64-linux-gnu ninja-build cmake
     
-        apt-get -y install freeglut3-dev libgl1-mesa-dev libglu1-mesa-dev libjpeg-dev libmysqlclient-dev \
+        sudo apt-get -y install freeglut3-dev libgl1-mesa-dev libglu1-mesa-dev libjpeg-dev libmysqlclient-dev \
         libnss3-dev libopus-dev libpng-dev libsqlite3-dev libssl-dev \
         libx11-xcb-dev libxcb-xinerama0-dev libxcb-xkb-dev libxcb1-dev \
         libxcursor-dev libxi-dev libxml2-dev libxrender-dev libxslt-dev mesa-common-dev \
@@ -70,25 +71,24 @@ jobs:
     # 安装android依赖
     - name: Install android dependencies
       run: |
-        export DEBIAN_FRONTEND=noninteractive
-        export JAVA_HOME=/usr/lib/jvm/java-${{env.ANDROID_JDK_VERSION}}-openjdk-amd64
-        apt-get install -y openjdk-${{env.ANDROID_JDK_VERSION}}-jdk sdkmanager
-        sdkmanager "platforms;android-${{env.ANDROID_API}}" "platform-tools" "build-tools;${{env.ANDROID_BUILD_TOOLS_VERSION}}"
-        export ANDROID_SDK_ROOT=/opt/android-sdk
-        sdkmanager "ndk;${{env.ANDROID_NDK_VERSION}}"
-        export ANDROID_NDK_ROOT=/opt/android-sdk/ndk/${{env.ANDROID_NDK_VERSION}}
+        sudo export DEBIAN_FRONTEND=noninteractive
+        sudo export JAVA_HOME=/usr/lib/jvm/java-${{env.ANDROID_JDK_VERSION}}-openjdk-amd64
+        sudo apt-get install -y openjdk-${{env.ANDROID_JDK_VERSION}}-jdk sdkmanager
+        sudo sdkmanager "platforms;android-${{env.ANDROID_API}}" "platform-tools" "build-tools;${{env.ANDROID_BUILD_TOOLS_VERSION}}"
+        sudo export ANDROID_SDK_ROOT=/opt/android-sdk
+        sudo sdkmanager "ndk;${{env.ANDROID_NDK_VERSION}}"
+        sudo export ANDROID_NDK_ROOT=/opt/android-sdk/ndk/${{env.ANDROID_NDK_VERSION}}
 
     # 下载Qt源代码
     - name: Download Qt source
       run: |
-        curl -L -o qt-everywhere-src.zip https://download.qt.io/official_releases/qt/${{env.QT_VERSION2}}/${{env.QT_VERSION}}/src/single/qt-everywhere-opensource-src-${{env.QT_VERSION}}.tar.xz
-        tar xvfp qt-everywhere-src.tar.xz
+        sudo curl -L -o qt-everywhere-src.zip https://download.qt.io/official_releases/qt/${{env.QT_VERSION2}}/${{env.QT_VERSION}}/src/single/qt-everywhere-opensource-src-${{env.QT_VERSION}}.tar.xz
+        sudo tar xvfp qt-everywhere-src.tar.xz
 
     # 编译Qt host tools
     - name: Build Qt host tools
       run: |
-        pwd
-        mkdir build-host
+        sudo mkdir build-host
         cd build-host
-        ../qt-everywhere-src/configure -developer-build -nomake tests -nomake examples
-        cmake --build . --target host_tools
+        sudo ../qt-everywhere-src/configure -developer-build -nomake tests -nomake examples
+        sudo cmake --build . --target host_tools
