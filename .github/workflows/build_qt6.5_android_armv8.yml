@@ -25,7 +25,7 @@ jobs:
     - name: Install updates
       run: |
         cd /home/runner/work/qt-builder
-        sudo export DEBIAN_FRONTEND=noninteractive
+        export DEBIAN_FRONTEND=noninteractive
         sudo dpkg --add-architecture arm64
         sudo apt-get -y update
         sudo apt-get -y upgrade
@@ -71,13 +71,13 @@ jobs:
     # 安装android依赖
     - name: Install android dependencies
       run: |
-        sudo export DEBIAN_FRONTEND=noninteractive
-        sudo export JAVA_HOME=/usr/lib/jvm/java-${{env.ANDROID_JDK_VERSION}}-openjdk-amd64
+        export DEBIAN_FRONTEND=noninteractive
+        export JAVA_HOME=/usr/lib/jvm/java-${{env.ANDROID_JDK_VERSION}}-openjdk-amd64
         sudo apt-get install -y openjdk-${{env.ANDROID_JDK_VERSION}}-jdk sdkmanager
         sudo sdkmanager "platforms;android-${{env.ANDROID_API}}" "platform-tools" "build-tools;${{env.ANDROID_BUILD_TOOLS_VERSION}}"
-        sudo export ANDROID_SDK_ROOT=/opt/android-sdk
+        export ANDROID_SDK_ROOT=/opt/android-sdk
         sudo sdkmanager "ndk;${{env.ANDROID_NDK_VERSION}}"
-        sudo export ANDROID_NDK_ROOT=/opt/android-sdk/ndk/${{env.ANDROID_NDK_VERSION}}
+        export ANDROID_NDK_ROOT=/opt/android-sdk/ndk/${{env.ANDROID_NDK_VERSION}}
 
     # 下载Qt源代码
     - name: Download Qt source
