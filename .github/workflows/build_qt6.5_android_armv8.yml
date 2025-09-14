@@ -14,26 +14,62 @@ env:
 
 jobs:
   android_armv8_release:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
     # 检出本仓库 /home/runner/work/qt-builder/qt-builder (仓库目录)
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    # 安装更新
+    # 修复 sources.list
+    - name: Fix Ubuntu sources list
+      run: |
+        sudo cat << EOF | sudo tee /etc/apt/sources.list
+        deb [arch=amd64] http://archive.ubuntu.com/ubuntu/ jammy main restricted
+        deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ jammy main restricted
+
+        deb [arch=amd64] http://archive.ubuntu.com/ubuntu/ jammy-updates main restricted
+        deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ jammy-updates main restricted
+
+        deb [arch=amd64] http://archive.ubuntu.com/ubuntu/ jammy universe
+        deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ jammy universe
+
+        deb [arch=amd64] http://archive.ubuntu.com/ubuntu/ jammy-updates universe
+        deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ jammy-updates universe
+
+        deb [arch=amd64] http://archive.ubuntu.com/ubuntu/ jammy multiverse
+        deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ jammy multiverse
+
+        deb [arch=amd64] http://archive.ubuntu.com/ubuntu/ jammy-updates multiverse
+        deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ jammy-updates multiverse
+
+        deb [arch=amd64] http://archive.ubuntu.com/ubuntu/ jammy-backports main restricted universe multiverse
+        deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ jammy-backports main restricted universe multiverse
+
+        deb [arch=amd64] http://security.ubuntu.com/ubuntu/ jammy-security main restricted
+        deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ jammy-security main restricted
+
+        deb [arch=amd64] http://security.ubuntu.com/ubuntu/ jammy-security universe
+        deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ jammy-security universe
+
+        deb [arch=amd64] http://security.ubuntu.com/ubuntu/ jammy-security multiverse
+        deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ jammy-security multiverse
+        EOF
+
+    # 安装更新 安装依赖
     - name: Install updates
       run: |
         cd /home/runner/work/qt-builder
         export DEBIAN_FRONTEND=noninteractive
+
         sudo dpkg --add-architecture arm64
+
         sudo apt-get -y update
+
         sudo apt-get -y upgrade
 
-    # 安装依赖
-    - name: Install dependencies
-      run: |
         sudo apt-get -y install build-essential
+
         sudo apt-get -y install gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu pip freeglut3-dev:arm64 gdb git iputils-ping \
         libgl1-mesa-dev:arm64 libglu1-mesa-dev:arm64 libjpeg-dev:arm64 libmysqlclient-dev:arm64 \
         libnss3-dev:arm64 libopus-dev:arm64 libpng-dev:arm64 libsqlite3-dev:arm64 libssl-dev:arm64 \
