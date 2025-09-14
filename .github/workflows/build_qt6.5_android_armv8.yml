@@ -92,7 +92,7 @@ jobs:
         cd build-host
         sudo ../qt-everywhere-src-${{env.QT_VERSION}}/configure -prefix ${{env.ROOT_DIR}}/build-host-install -release -nomake tests -nomake examples -opensource -confirm-license \
         -submodules qtbase,qttools
-        sudo cmake --build . --parallel $(($(nproc)+4))
+        sudo cmake --build . --target host_tools --parallel $(($(nproc)+4))
         sudo cmake --install .
 
     # 拉取openssl
