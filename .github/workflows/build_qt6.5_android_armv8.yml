@@ -125,7 +125,7 @@ jobs:
       run: |
         sudo mkdir build-host
         cd build-host
-        sudo ../qt-everywhere-src/qt-everywhere-src-${{env.QT_VERSION}}/configure -developer-build -nomake tests -nomake examples
+        sudo ../qt-everywhere-src-${{env.QT_VERSION}}/configure -developer-build -nomake tests -nomake examples
         sudo cmake --build . --target host_tools
 
     # 编译Qt android
