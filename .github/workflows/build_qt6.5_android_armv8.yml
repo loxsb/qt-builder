@@ -88,12 +88,9 @@ jobs:
     - name: Build Qt host tools
       run: |
         sudo mkdir build-host
-        sudo mkdir build-host-install
         cd build-host
-        sudo ../qt-everywhere-src-${{env.QT_VERSION}}/configure -prefix ${{env.ROOT_DIR}}/build-host-install -release -nomake tests -nomake examples -opensource -confirm-license \
-        -submodules qtbase,qttools
+        sudo ../qt-everywhere-src-${{env.QT_VERSION}}/configure -developer-build -nomake tests -nomake examples
         sudo cmake --build . --target host_tools --parallel $(($(nproc)+4))
-        sudo cmake --install .
 
     # 拉取openssl
     - name: Download openssl
@@ -116,7 +113,7 @@ jobs:
         -nomake examples -nomake tests -opensource -confirm-license -qt-libpng -qt-libjpeg -qt-zlib -qt-pcre -qt-freetype -schannel \
         -platform android-clang -android-abis arm64-v8a \
         -prefix ${{env.ROOT_DIR}}/install -android-ndk $ANDROID_NDK_ROOT -android-sdk $ANDROID_SDK_ROOT \
-        -qt-host-path ${{env.ROOT_DIR}}/build-host-install \
+        -qt-host-path ${{env.ROOT_DIR}}/build-host \
         -submodules qtbase,qtdeclarative,qtquickcontrols2 \
         -openssl-linked \
         -- -DOPENSSL_ROOT_DIR=${{env.QT_VERSION}}/android_openssl/ssl_3 -DOPENSSL_CRYPTO_LIBRARY=${{env.QT_VERSION}}/android_openssl/ssl_3 -DOPENSSL_USE_STATIC_LIBS=ON
