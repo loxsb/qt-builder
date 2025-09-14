@@ -14,7 +14,7 @@ env:
 
 jobs:
   android_armv8_release:
-    runs-on: ubuntu-jammy
+    runs-on: ubuntu-22.04
 
     steps:
     # 检出本仓库 /home/runner/work/qt-builder/qt-builder (仓库目录)
