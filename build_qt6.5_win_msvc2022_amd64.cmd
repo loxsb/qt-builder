@@ -19,7 +19,7 @@ SET QT_PATH=D:\a\qt-builder\Qt
 SET SRC_QT="%QT_PATH%\%QT_VERSION%\qt-everywhere-src-%QT_VERSION%"
 
 :: 设置安装文件夹目录
-SET INSTALL_DIR="%QT_PATH%\%QT_VERSION%\%MSVC_VERSION%"
+SET INSTALL_DIR="%QT_PATH%\%QT_VERSION%-install\%MSVC_VERSION%"
 
 :: 设置build文件夹目录
 SET BUILD_DIR="%QT_PATH%\%QT_VERSION%\build-%MSVC_VERSION%"
