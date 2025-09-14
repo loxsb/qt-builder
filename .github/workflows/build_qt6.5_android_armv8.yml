@@ -14,7 +14,7 @@ env:
 
 jobs:
   android_armv8_release:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-jammy
 
     steps:
     # 检出本仓库 /home/runner/work/qt-builder/qt-builder (仓库目录)
@@ -71,7 +71,7 @@ jobs:
         sudo apt-get -y install build-essential
 
         sudo apt-get -y install gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu pip freeglut3-dev:arm64 gdb git iputils-ping \
-        libgl1-mesa-dev:arm64 libglu1-mesa-dev:arm64 libjpeg-dev:arm64 libmysqlclient-dev:arm64 \
+        libunwind-dev:arm64 libgl1-mesa-dev:arm64 libglu1-mesa-dev:arm64 libjpeg-dev:arm64 libmysqlclient-dev:arm64 \
         libnss3-dev:arm64 libopus-dev:arm64 libpng-dev:arm64 libsqlite3-dev:arm64 libssl-dev:arm64 \
         libx11-xcb-dev:arm64 libxcb-xinerama0-dev:arm64 libxcb-xkb-dev:arm64 libxcb1-dev:arm64 \
         libxcursor-dev:arm64 libxi-dev:arm64 libxml2-dev:arm64 libxrender-dev:arm64 libxslt-dev:arm64 \
