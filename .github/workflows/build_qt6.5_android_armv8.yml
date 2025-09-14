@@ -11,6 +11,7 @@ env:
   ANDROID_BUILD_TOOLS_VERSION: 35.0.0
   ARCH: arm64-v8a
   FILE_NAME: release_android_ndk27_armv8
+  ROOT_DIR: /home/runner/work/qt-builder
 
 jobs:
   android_armv8_release:
@@ -64,7 +65,7 @@ jobs:
         # sudo dpkg --add-architecture arm64
         sudo apt-get -y update
         sudo apt-get -y upgrade
-        sudo apt-get -y install build-essential git perl python3 python3-pip ninja-build cmake libgl1-mesa-dev libglu1-mesa-dev \
+        sudo apt-get -y install build-essential git perl python3 python3-pip ninja-build cmake libgl1-mesa-dev libglu1-mesa-dev p7zip-full \
         llvm-15 llvm-15-dev clang-15 libclang-15-dev
 
     # 安装android依赖
@@ -87,12 +88,49 @@ jobs:
     - name: Build Qt host tools
       run: |
         sudo mkdir build-host
+        sudo mkdir build-host-install
         cd build-host
-        sudo ../qt-everywhere-src-${{env.QT_VERSION}}/configure -developer-build -nomake tests -nomake examples
-        sudo cmake --build . --target host_tools
+        sudo ../qt-everywhere-src-${{env.QT_VERSION}}/configure -prefix ${{env.ROOT_DIR}}/build-host-install -release -nomake tests -nomake examples -opensource -confirm-license \
+        -submodules qtbase,qttools \
+        sudo cmake --build . --parallel $(($(nproc)+4))
+        sudo cmake --install .
+
+    # 拉取openssl
+    - name: Download openssl
+      run: |
+        cd ${{env.ROOT_DIR}}
+        apt-get install -y protobuf-compiler
+        git clone https://github.com/KDAB/android_openssl
+        cd android_openssl
+        git checkout f5d857ef1d437595f7c3ab0d06e61beae7ca8b99
 
     # 编译Qt android
     - name: Build Qt android
       run: |
+        cd ${{env.ROOT_DIR}}
         sudo mkdir build
+        sudo mkdir install
         cd build
+        sudo ../qt-everywhere-src-${{env.QT_VERSION}}/configure \
+        -release -shared -force-debug-info -separate-debug-info \
+        -nomake examples -nomake tests -opensource -confirm-license -qt-libpng -qt-libjpeg -qt-zlib -qt-pcre -qt-freetype -schannel \
+        -platform android-clang -android-abis arm64-v8a \
+        -prefix ${{env.ROOT_DIR}}/install -android-ndk $ANDROID_NDK_ROOT -android-sdk $ANDROID_SDK_ROOT \
+        -qt-host-path ${{env.ROOT_DIR}}/build-host-install \
+        -submodules qtbase,qtdeclarative,qtquickcontrols2 \
+        -openssl-linked \
+        -- -DOPENSSL_ROOT_DIR=${{env.QT_VERSION}}/android_openssl/ssl_3 -DOPENSSL_CRYPTO_LIBRARY=${{env.QT_VERSION}}/android_openssl/ssl_3 -DOPENSSL_USE_STATIC_LIBS=ON
+
+        sudo cmake --build . --parallel $(($(nproc)+4))
+        sudo cmake --install .
+
+    # 打包
+    - name: Package binaries
+      run: |
+        7z a Qt_${{env.QT_VERSION}}-${{env.FILE_NAME}}.7z ./install -mx=9
+
+    # 上传
+    - uses: actions/upload-artifact@v4
+      with:
+        name: Qt_${{env.QT_VERSION}}-${{env.FILE_NAME}}
+        path: Qt_${{env.QT_VERSION}}-${{env.FILE_NAME}}.7z
