@@ -107,7 +107,6 @@ jobs:
     # 安装android依赖
     - name: Install android dependencies
       run: |
-        export DEBIAN_FRONTEND=noninteractive
         export JAVA_HOME=/usr/lib/jvm/java-${{env.ANDROID_JDK_VERSION}}-openjdk-amd64
         sudo apt-get install -y openjdk-${{env.ANDROID_JDK_VERSION}}-jdk sdkmanager
         sudo sdkmanager "platforms;android-${{env.ANDROID_API}}" "platform-tools" "build-tools;${{env.ANDROID_BUILD_TOOLS_VERSION}}"
@@ -126,5 +125,11 @@ jobs:
       run: |
         sudo mkdir build-host
         cd build-host
-        sudo ../qt-everywhere-src/configure -developer-build -nomake tests -nomake examples
+        sudo ../qt-everywhere-src/qt-everywhere-src-${{env.QT_VERSION}}/configure -developer-build -nomake tests -nomake examples
         sudo cmake --build . --target host_tools
+
+    # 编译Qt android
+    - name: Build Qt android
+      run: |
+        sudo mkdir build
+        cd build
