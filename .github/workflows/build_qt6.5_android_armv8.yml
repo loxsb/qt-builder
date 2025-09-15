@@ -93,13 +93,19 @@ jobs:
         sudo sdkmanager "ndk;${{env.ANDROID_NDK_VERSION}}"
         export ANDROID_NDK_ROOT=/opt/android-sdk/ndk/${{env.ANDROID_NDK_VERSION}}
 
-    # 下载Qt源代码用于编译host
-    - name: Download Qt source
+    # 下载源代码
+    - name: Download source code
       run: |
+        sudo apt-get install -y protobuf-compiler
+        sudo git clone https://github.com/KDAB/android_openssl
+        cd android_openssl
+        sudo git checkout f5d857ef1d437595f7c3ab0d06e61beae7ca8b99
+        cd ..
+
         sudo curl -L -o qt-everywhere-src.tar.xz https://download.qt.io/official_releases/qt/${{env.QT_VERSION2}}/${{env.QT_VERSION}}/src/single/qt-everywhere-opensource-src-${{env.QT_VERSION}}.tar.xz
         sudo tar xvfp qt-everywhere-src.tar.xz
 
-    # 编译Qt host tools
+    # 编译Qt
     - name: Build Qt host tools
       run: |
         sudo mkdir build-host
@@ -107,26 +113,9 @@ jobs:
         sudo ../qt-everywhere-src-${{env.QT_VERSION}}/configure -developer-build -nomake tests -nomake examples
         sudo cmake --build . --target host_tools --parallel $(($(nproc)+4))
 
-    # 拉取openssl
-    - name: Download openssl
-      run: |
-        cd ${{env.ROOT_DIR}}
-        sudo apt-get install -y protobuf-compiler
-        sudo git clone https://github.com/KDAB/android_openssl
-        cd android_openssl
-        sudo git checkout f5d857ef1d437595f7c3ab0d06e61beae7ca8b99
-
-    # 下载Qt源代码用户编译target
-    - name: Download Qt source again
-      run: |
-        cd ${{env.ROOT_DIR}}
-        sudo curl -L -o qt-everywhere-src.tar.xz https://download.qt.io/official_releases/qt/${{env.QT_VERSION2}}/${{env.QT_VERSION}}/src/single/qt-everywhere-opensource-src-${{env.QT_VERSION}}.tar.xz
-        sudo tar xvfp qt-everywhere-src.tar.xz
-
-    # 编译Qt android
-    - name: Build Qt android
-      run: |
-        cd ${{env.ROOT_DIR}}
+        cd ..
+        ls -al
+        
         sudo mkdir build
         sudo mkdir install
         cd build
