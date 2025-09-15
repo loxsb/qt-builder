@@ -75,7 +75,7 @@ jobs:
     # 安装更新 安装依赖
     - name: Install updates
       run: |
-        cd /home/runner/work/qt-builder
+        cd ${{env.ROOT_DIR}}
         export DEBIAN_FRONTEND=noninteractive
         # sudo dpkg --add-architecture arm64
         sudo apt-get -y update
@@ -120,6 +120,11 @@ jobs:
     - name: Build Qt android
       run: |
         cd ${{env.ROOT_DIR}}
+        
+        rm -rf ./qt-everywhere-src-${{env.QT_VERSION}}
+        sudo tar xvfp qt-everywhere-src.tar.xz
+        ls -al
+
         sudo mkdir build
         sudo mkdir install
         cd build
