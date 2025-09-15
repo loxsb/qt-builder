@@ -123,11 +123,8 @@ jobs:
         -release -shared -force-debug-info -separate-debug-info \
         -nomake examples -nomake tests -opensource -confirm-license -qt-libpng -qt-libjpeg -qt-zlib -qt-pcre -qt-freetype -schannel \
         -platform android-clang -android-abis arm64-v8a \
-        -prefix ${{env.ROOT_DIR}}/install -android-ndk $ANDROID_NDK_ROOT -android-sdk $ANDROID_SDK_ROOT \
-        -qt-host-path ${{env.ROOT_DIR}}/build-host \
-        -submodules qtbase,qtdeclarative,qtquickcontrols2 \
-        -openssl-linked \
-        -- -DOPENSSL_ROOT_DIR=${{env.QT_VERSION}}/android_openssl/ssl_3 -DOPENSSL_CRYPTO_LIBRARY=${{env.QT_VERSION}}/android_openssl/ssl_3 -DOPENSSL_USE_STATIC_LIBS=ON
+        -prefix ${{env.ROOT_DIR}}/install -android-ndk $ANDROID_NDK_ROOT -android-sdk $ANDROID_SDK_ROOT -qt-host-path ${{env.ROOT_DIR}}/build-host \
+        -openssl-linked -- -DOPENSSL_ROOT_DIR=${{env.QT_VERSION}}/android_openssl/ssl_3 -DOPENSSL_CRYPTO_LIBRARY=${{env.QT_VERSION}}/android_openssl/ssl_3 -DOPENSSL_USE_STATIC_LIBS=ON
 
         sudo cmake --build . --parallel $(($(nproc)+4))
         sudo cmake --install .
