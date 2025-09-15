@@ -111,10 +111,10 @@ jobs:
     - name: Download openssl
       run: |
         cd ${{env.ROOT_DIR}}
-        apt-get install -y protobuf-compiler
-        git clone https://github.com/KDAB/android_openssl
+        sudo apt-get install -y protobuf-compiler
+        sudo git clone https://github.com/KDAB/android_openssl
         cd android_openssl
-        git checkout f5d857ef1d437595f7c3ab0d06e61beae7ca8b99
+        sudo git checkout f5d857ef1d437595f7c3ab0d06e61beae7ca8b99
 
     # 编译Qt android
     - name: Build Qt android
@@ -139,7 +139,7 @@ jobs:
     # 打包
     - name: Package binaries
       run: |
-        7z a Qt_${{env.QT_VERSION}}-${{env.FILE_NAME}}.7z ./install -mx=9
+        sudo 7z a Qt_${{env.QT_VERSION}}-${{env.FILE_NAME}}.7z ./install -mx=9
 
     # 上传
     - uses: actions/upload-artifact@v4
