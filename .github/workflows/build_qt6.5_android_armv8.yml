@@ -11,7 +11,7 @@ env:
   ANDROID_BUILD_TOOLS_VERSION: 35.0.0
   ARCH: arm64-v8a
   FILE_NAME: release_android_ndk27_armv8
-  ROOT_DIR: /home/runner/work/qt-builder
+  ROOT_DIR: /home/runner/work/qt-builder/qt-builder
 
 jobs:
   android_armv8_release:
@@ -105,16 +105,21 @@ jobs:
         sudo curl -L -o qt-everywhere-src.tar.xz https://download.qt.io/official_releases/qt/${{env.QT_VERSION2}}/${{env.QT_VERSION}}/src/single/qt-everywhere-opensource-src-${{env.QT_VERSION}}.tar.xz
         sudo tar xvfp qt-everywhere-src.tar.xz
 
-    # 编译Qt
+    # 编译Qt host
     - name: Build Qt host tools
       run: |
         sudo mkdir build-host
         cd build-host
         sudo ../qt-everywhere-src-${{env.QT_VERSION}}/configure -developer-build -nomake tests -nomake examples
         sudo cmake --build . --target host_tools --parallel $(($(nproc)+4))
-
         cd ..
+
+    # 编译Qt
+    - name: Build Qt
+      run: |
         ls -al
+        ls -al ${{env.ROOT_DIR}}/build-host
+        ls -al ${{env.ROOT_DIR}}/build-host/qtbase
         
         sudo mkdir build
         sudo mkdir install
@@ -128,6 +133,7 @@ jobs:
 
         sudo cmake --build . --parallel $(($(nproc)+4))
         sudo cmake --install .
+        cd ..
 
     # 打包
     - name: Package binaries
