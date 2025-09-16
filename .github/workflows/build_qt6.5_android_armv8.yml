@@ -7,6 +7,8 @@ env:
   QT_VERSION2: 6.5
   ANDROID_NDK_VERSION: 27.2.12479018
   ANDROID_JDK_VERSION: 17
+  ANDROID_NDK_ROOT: /usr/local/lib/android/sdk/ndk/27.2.12479018
+  ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
   ANDROID_API: 26
   ANDROID_BUILD_TOOLS_VERSION: 26.0.0
   ARCH: arm64-v8a
@@ -90,12 +92,9 @@ jobs:
         export JAVA_HOME=/usr/lib/jvm/java-${{env.ANDROID_JDK_VERSION}}-openjdk-amd64
         sudo apt-get install -y openjdk-${{env.ANDROID_JDK_VERSION}}-jdk sdkmanager
         sudo sdkmanager "platforms;android-${{env.ANDROID_API}}" "platform-tools" "build-tools;${{env.ANDROID_BUILD_TOOLS_VERSION}}"
-        export ANDROID_SDK_ROOT=/usr/local/lib/android/sdk
         sudo sdkmanager "ndk;${{env.ANDROID_NDK_VERSION}}"
-        export ANDROID_NDK_ROOT=/usr/local/lib/android/sdk/ndk/${{env.ANDROID_NDK_VERSION}}
-        ls -al $ANDROID_SDK_ROOT
-        ls -al $ANDROID_NDK_ROOT
-        ls -al $JAVA_HOME
+        ls -al /usr/local/lib/android/sdk
+        ls -al /usr/local/lib/android/sdk/ndk
 
     # 下载源代码
     - name: Download source code
@@ -129,18 +128,23 @@ jobs:
         
         sudo mkdir build
         sudo mkdir install
+
+        ls -al /usr/local/lib/android/sdk/ndk
+
         cd build
         sudo ../qt-everywhere-src-${{env.QT_VERSION}}/configure \
         -release -shared -force-debug-info -separate-debug-info \
         -nomake examples -nomake tests -opensource -confirm-license -qt-libpng -qt-libjpeg -qt-zlib -qt-pcre -qt-freetype \
         -platform android-clang -android-abis arm64-v8a \
-        -prefix ${{env.ROOT_DIR}}/install -android-ndk $ANDROID_NDK_ROOT -android-sdk $ANDROID_SDK_ROOT -qt-host-path ${{env.ROOT_DIR}}/build-host/qtbase \
+        -prefix ${{env.ROOT_DIR}}/install -android-ndk ${{env.ANDROID_NDK_ROOT}} -android-sdk ${{env.ANDROID_SDK_ROOT}} -qt-host-path ${{env.ROOT_DIR}}/build-host/qtbase \
         -openssl-linked \
         -- -DOPENSSL_USE_STATIC_LIBS=ON \
         -DOPENSSL_ROOT_DIR=${{env.ROOT_DIR}}/android_openssl/ssl_3 \
         -DOPENSSL_INCLUDE_DIR=${{env.ROOT_DIR}}/android_openssl/ssl_3/include \
         -DOPENSSL_CRYPTO_LIBRARY=${{env.ROOT_DIR}}/android_openssl/ssl_3/arm64-v8a/libcrypto.a \
         -DOPENSSL_SSL_LIBRARY=${{env.ROOT_DIR}}/android_openssl/ssl_3/arm64-v8a/libssl.a
+
+        ls -al /usr/local/lib/android/sdk/ndk
 
         sudo cmake --build . --parallel $(($(nproc)+4))
         sudo cmake --install .
