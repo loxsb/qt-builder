@@ -82,6 +82,7 @@ jobs:
         sudo apt-get -y upgrade
         sudo apt-get -y install build-essential git perl python3 python3-pip ninja-build cmake libgl1-mesa-dev libglu1-mesa-dev p7zip-full \
         llvm-15 llvm-15-dev clang-15 libclang-15-dev
+        sudo pip install html5lib
 
     # 安装android依赖
     - name: Install android dependencies
@@ -135,8 +136,8 @@ jobs:
         -- -DOPENSSL_USE_STATIC_LIBS=ON \
         -DOPENSSL_ROOT_DIR=${{env.ROOT_DIR}}/android_openssl/ssl_3 \
         -DOPENSSL_INCLUDE_DIR=${{env.ROOT_DIR}}/android_openssl/ssl_3/include \
-        -DOPENSSL_CRYPTO_LIBRARY=${{env.ROOT_DIR}}/android_openssl/ssl_3/arm64-v8a \
-        -DOPENSSL_SSL_LIBRARY=${{env.ROOT_DIR}}/android_openssl/ssl_3/arm64-v8a
+        -DOPENSSL_CRYPTO_LIBRARY=${{env.ROOT_DIR}}/android_openssl/ssl_3/arm64-v8a/libcrypto.a \
+        -DOPENSSL_SSL_LIBRARY=${{env.ROOT_DIR}}/android_openssl/ssl_3/arm64-v8a/libssl.a
 
         sudo cmake --build . --parallel $(($(nproc)+4))
         sudo cmake --install .
