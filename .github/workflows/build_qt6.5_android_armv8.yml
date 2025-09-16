@@ -90,10 +90,12 @@ jobs:
         export JAVA_HOME=/usr/lib/jvm/java-${{env.ANDROID_JDK_VERSION}}-openjdk-amd64
         sudo apt-get install -y openjdk-${{env.ANDROID_JDK_VERSION}}-jdk sdkmanager
         sudo sdkmanager "platforms;android-${{env.ANDROID_API}}" "platform-tools" "build-tools;${{env.ANDROID_BUILD_TOOLS_VERSION}}"
-        export ANDROID_SDK_ROOT=/opt/android-sdk
+        export ANDROID_SDK_ROOT=/usr/local/lib/android/sdk
         sudo sdkmanager "ndk;${{env.ANDROID_NDK_VERSION}}"
-        export ANDROID_NDK_ROOT=/opt/android-sdk/ndk/${{env.ANDROID_NDK_VERSION}}
-        ls -al /opt/android-sdk/ndk
+        export ANDROID_NDK_ROOT=/usr/local/lib/android/sdk/ndk/${{env.ANDROID_NDK_VERSION}}
+        ls -al $ANDROID_SDK_ROOT
+        ls -al $ANDROID_NDK_ROOT
+        ls -al $JAVA_HOME
 
     # 下载源代码
     - name: Download source code
