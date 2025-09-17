@@ -5,9 +5,9 @@ on: workflow_dispatch
 env:
   QT_VERSION: 6.5.6
   QT_VERSION2: 6.5
-  ANDROID_NDK_VERSION: 27.2.12479018
+  ANDROID_NDK_VERSION: 26.3.11579264
   ANDROID_JDK_VERSION: 17
-  ANDROID_NDK_ROOT: /usr/local/lib/android/sdk/ndk/27.2.12479018
+  ANDROID_NDK_ROOT: /usr/local/lib/android/sdk/ndk/26.3.11579264
   ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
   ANDROID_API: 26
   ANDROID_BUILD_TOOLS_VERSION: 26.0.0
