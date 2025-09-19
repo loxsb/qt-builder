@@ -7,7 +7,7 @@ env:
   QT_VERSION: 6.5.6
   QT_VERSION2: 6.5
   ARCH: msvc2022-amd64
-  ROOT_DIR: D:\a\qt-builder\qt-builder\
+  ROOT_DIR: D:\a\qt-builder\qt-builder
 
 jobs:
   windows_release:
@@ -43,15 +43,18 @@ jobs:
 
         curl -L -o qt-everywhere-src.zip https://download.qt.io/official_releases/qt/${{env.QT_VERSION2}}/${{env.QT_VERSION}}/src/single/qt-everywhere-opensource-src-${{env.QT_VERSION}}.zip
         unzip -q qt-everywhere-src.zip -d ./qt-everywhere-src
+        ls ${{env.ROOT_DIR}}
+        ls ${{env.ROOT_DIR}}\qt-everywhere-src
 
       # 构建Qt
     - name: Build Qt
       run: |
+        cd ${{env.ROOT_DIR}}
         mkdir -p build
         mkdir -p ${{env.QT_VERSION}}\${{env.ARCH}}
         cd build
         & "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" amd64
-        & ${{env.ROOT_DIR}}\qt-everywhere-src\configure.bat -release -shared -force-debug-info -separate-debug-info -prefix ${{env.ROOT_DIR}}\${{env.QT_VERSION}}\${{env.ARCH}} -nomake examples -nomake tests -skip qtwebengine -opensource -confirm-license -qt-libpng -qt-libjpeg -qt-zlib -qt-pcre -qt-freetype -schannel -platform win32-msvc
+        & "${{env.ROOT_DIR}}\qt-everywhere-src\configure.bat" -release -shared -force-debug-info -separate-debug-info -prefix ${{env.ROOT_DIR}}\${{env.QT_VERSION}}\${{env.ARCH}} -nomake examples -nomake tests -skip qtwebengine -opensource -confirm-license -qt-libpng -qt-libjpeg -qt-zlib -qt-pcre -qt-freetype -schannel -platform win32-msvc
         cmake --build . --parallel
         cmake --install .
         copy .\qt.conf ${{env.ROOT_DIR}}\${{env.QT_VERSION}}\${{env.ARCH}}\bin
