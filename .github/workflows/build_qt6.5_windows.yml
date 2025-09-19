@@ -51,7 +51,7 @@ jobs:
         mkdir -p ${{env.QT_VERSION}}\${{env.ARCH}}
         cd build
         & "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" amd64
-        ../qt-everywhere-src/configure.bat -release -shared -force-debug-info -separate-debug-info -prefix ${{env.ROOT_DIR}}\${{env.QT_VERSION}}\${{env.ARCH}} -nomake examples -nomake tests -skip qtwebengine -opensource -confirm-license -qt-libpng -qt-libjpeg -qt-zlib -qt-pcre -qt-freetype -schannel -platform win32-msvc
+        & ${{env.ROOT_DIR}}\qt-everywhere-src\configure.bat -release -shared -force-debug-info -separate-debug-info -prefix ${{env.ROOT_DIR}}\${{env.QT_VERSION}}\${{env.ARCH}} -nomake examples -nomake tests -skip qtwebengine -opensource -confirm-license -qt-libpng -qt-libjpeg -qt-zlib -qt-pcre -qt-freetype -schannel -platform win32-msvc
         cmake --build . --parallel
         cmake --install .
         copy .\qt.conf ${{env.ROOT_DIR}}\${{env.QT_VERSION}}\${{env.ARCH}}\bin
