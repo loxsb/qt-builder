@@ -88,7 +88,7 @@ jobs:
       run: |
         export JAVA_HOME=/usr/lib/jvm/java-${{env.ANDROID_JDK_VERSION}}-openjdk-amd64
         sudo apt-get install -y openjdk-${{env.ANDROID_JDK_VERSION}}-jdk sdkmanager
-        sudo sdkmanager "platforms;android-35" "platform-tools" "build-tools;35.0.1"
+        sudo sdkmanager "platforms;android-33" "platform-tools" "build-tools;33.0.0"
         sudo sdkmanager "ndk;${{env.ANDROID_NDK_VERSION}}"
 
     # 下载源代码
