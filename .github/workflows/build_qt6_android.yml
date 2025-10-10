@@ -1,15 +1,15 @@
-name: build_qt6.5_android
+name: build_qt6_android
 
 on: workflow_dispatch
 
 env:
-  QT_VERSION: 6.5.6
-  QT_VERSION2: 6.5
-  ANDROID_NDK_VERSION: 26.3.11579264
-  ANDROID_NDK_ROOT: /usr/local/lib/android/sdk/ndk/26.3.11579264
-  ANDROID_JDK_VERSION: 17
+  QT_VERSION: 6.7.3
+  QT_VERSION2: 6.7
+  ANDROID_NDK_VERSION: 25.2.9519653
+  ANDROID_NDK_ROOT: /usr/local/lib/android/sdk/ndk/25.2.9519653
+  ANDROID_JDK_VERSION: 11
   ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
-  ANDROID_PLATFORM_API: 26
+  ANDROID_PLATFORM_API: 25
   ARCH: arm64-v8a
   ROOT_DIR: /home/runner/work/qt-builder/qt-builder
 
@@ -100,7 +100,7 @@ jobs:
         cd android_openssl
         sudo git checkout 0025bbe48f69792f95e02c9289df0fae68c954d6
         cd ..
-        sudo curl -L -o qt-everywhere-src.tar.xz https://download.qt.io/official_releases/qt/${{env.QT_VERSION2}}/${{env.QT_VERSION}}/src/single/qt-everywhere-opensource-src-${{env.QT_VERSION}}.tar.xz
+        sudo curl -L -o qt-everywhere-src.tar.xz https://download.qt.io/archive/qt/${{env.QT_VERSION2}}/${{env.QT_VERSION}}/single/qt-everywhere-src-6.7.3.tar.xz
         sudo tar xvfp qt-everywhere-src.tar.xz
 
     # 编译Qt host

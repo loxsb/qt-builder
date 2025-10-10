@@ -1,4 +1,4 @@
-name: build_qt6.5_windows
+name: build_qt6_windows
 
 on: workflow_dispatch
 #on: [push, pull_request]
